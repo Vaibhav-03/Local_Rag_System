@@ -59,13 +59,13 @@ class ContentGuardrails:
         """
         self.config = config
         
-        # Compile blocked topic patterns for efficiency
+
         self._blocked_patterns = [
             re.compile(rf'\b{re.escape(topic)}\b', re.IGNORECASE)
             for topic in config.blocked_topics
         ]
         
-        # Prompt injection patterns
+
         self._injection_patterns = [
             re.compile(r'ignore\s+(previous|above|all)\s+(instructions?|prompts?)', re.IGNORECASE),
             re.compile(r'disregard\s+(previous|above|all)', re.IGNORECASE),
@@ -89,21 +89,21 @@ class ContentGuardrails:
         if not self.config.enabled:
             return GuardrailResult(GuardrailAction.ALLOW, "Guardrails disabled")
         
-        # Check query length
+
         if len(query) > self.config.max_query_length:
             return GuardrailResult(
                 GuardrailAction.BLOCK,
                 f"Query too long ({len(query)} chars). Maximum: {self.config.max_query_length}"
             )
         
-        # Check for empty query
+
         if not query.strip():
             return GuardrailResult(
                 GuardrailAction.BLOCK,
                 "Empty query"
             )
         
-        # Check for prompt injection attempts
+
         for pattern in self._injection_patterns:
             if pattern.search(query):
                 return GuardrailResult(
@@ -111,7 +111,7 @@ class ContentGuardrails:
                     "Query appears to contain prompt injection attempt"
                 )
         
-        # Check for blocked topics
+
         for i, pattern in enumerate(self._blocked_patterns):
             if pattern.search(query):
                 topic = self.config.blocked_topics[i]
@@ -120,7 +120,7 @@ class ContentGuardrails:
                     f"Query contains blocked topic: {topic}"
                 )
         
-        # Check domain restrictions (if any)
+
         if self.config.allowed_domains:
             domain_match = self._check_domain(query)
             if not domain_match:
@@ -152,7 +152,7 @@ class ContentGuardrails:
         if not self.config.enabled:
             return GuardrailResult(GuardrailAction.ALLOW, "Guardrails disabled")
         
-        # Check for blocked topics in response
+
         for i, pattern in enumerate(self._blocked_patterns):
             if pattern.search(response):
                 topic = self.config.blocked_topics[i]
@@ -179,11 +179,11 @@ class ContentGuardrails:
         """
         sanitized = query
         
-        # Remove potential prompt injection markers
+
         for pattern in self._injection_patterns:
             sanitized = pattern.sub('', sanitized)
         
-        # Remove excessive whitespace
+
         sanitized = ' '.join(sanitized.split())
         
         return sanitized.strip()
@@ -198,7 +198,7 @@ class QueryRefiner:
     """
     
     def __init__(self):
-        # Patterns that indicate ambiguous queries
+
         self._ambiguous_patterns = [
             (re.compile(r'^(what|how|why|when|where|who)\s*\??$', re.IGNORECASE), 
              "Your question seems incomplete. Could you provide more details?"),
@@ -208,7 +208,7 @@ class QueryRefiner:
              "I'd be happy to help! What would you like to know?"),
         ]
         
-        # Keywords that suggest the user needs clarification
+
         self._clarification_keywords = [
             'maybe', 'perhaps', 'not sure', 'i think', 'possibly',
             'something about', 'anything about', 'stuff about'
@@ -226,17 +226,17 @@ class QueryRefiner:
         """
         query_lower = query.lower().strip()
         
-        # Check for ambiguous patterns
+
         for pattern, prompt in self._ambiguous_patterns:
             if pattern.match(query):
                 return True, prompt
         
-        # Check for very short queries
+
         words = query.split()
         if len(words) < 3:
             return True, "Your query is quite brief. Could you provide more context or details?"
         
-        # Check for clarification keywords
+
         if any(kw in query_lower for kw in self._clarification_keywords):
             return True, "It sounds like you're uncertain about your query. Let me help clarify - what specific aspect would you like to know about?"
         

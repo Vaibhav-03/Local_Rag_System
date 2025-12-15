@@ -107,7 +107,7 @@ class VectorRetriever:
             chunk_overlap=config.chunk_overlap,
         )
         
-        # Try to load existing index
+
         self._load_index()
     
     def _load_index(self) -> bool:
@@ -142,7 +142,7 @@ class VectorRetriever:
         index_path = Path(self.config.index_path)
         docs_path = Path(self.config.documents_path)
         
-        # Create directories if needed
+
         index_path.parent.mkdir(parents=True, exist_ok=True)
         docs_path.parent.mkdir(parents=True, exist_ok=True)
         
@@ -169,17 +169,17 @@ class VectorRetriever:
         print(f"Building index for {len(documents)} documents...")
         self.documents = documents
         
-        # Encode all documents
+
         texts = [doc.text for doc in documents]
         embeddings = self.embedding_model.encode_documents(texts, show_progress=True)
         
-        # Create FAISS index
+
         dimension = embeddings.shape[1]
         
         # Use IndexFlatIP for inner product (cosine similarity with normalized vectors)
         self.index = faiss.IndexFlatIP(dimension)
         
-        # Add embeddings to index
+
         self.index.add(embeddings.astype(np.float32))
         
         print(f"Index built with {self.index.ntotal} vectors")
@@ -196,16 +196,16 @@ class VectorRetriever:
         if not documents:
             return
         
-        # Encode new documents
+
         texts = [doc.text for doc in documents]
         embeddings = self.embedding_model.encode_documents(texts, show_progress=True)
         
         if self.index is None:
-            # Create new index
+    
             dimension = embeddings.shape[1]
             self.index = faiss.IndexFlatIP(dimension)
         
-        # Add to index
+
         self.index.add(embeddings.astype(np.float32))
         self.documents.extend(documents)
         
@@ -234,16 +234,16 @@ class VectorRetriever:
         top_k = top_k or self.config.top_k
         threshold = threshold or self.config.similarity_threshold
         
-        # Encode query
+
         query_embedding = self.embedding_model.encode_query(query)
         
-        # Search index
+
         scores, indices = self.index.search(
             query_embedding.reshape(1, -1).astype(np.float32),
             min(top_k, self.index.ntotal),
         )
         
-        # Build results
+
         results = []
         for rank, (score, idx) in enumerate(zip(scores[0], indices[0])):
             if idx == -1:  # FAISS returns -1 for missing results
@@ -295,7 +295,7 @@ def load_corpus_from_directory(
     documents = []
     doc_id = 0
     
-    # Supported file types
+
     text_extensions = {'.txt', '.md'}
     
     for file_path in corpus_path.rglob('*'):
@@ -318,7 +318,7 @@ def load_corpus_from_directory(
             if not text.strip():
                 continue
             
-            # Chunk the document
+
             source_name = str(file_path.relative_to(corpus_path))
             chunks = chunker.chunk_text(text, {"source_file": source_name})
             

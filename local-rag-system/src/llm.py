@@ -64,7 +64,7 @@ class LocalLLM:
                 "Please download a GGUF model file."
             )
         
-        # Determine optimal thread count
+
         n_threads = self.config.n_threads
         if n_threads == 0:
             n_threads = os.cpu_count() or 4
@@ -111,10 +111,10 @@ class LocalLLM:
         if self.model is None:
             raise RuntimeError("Model not loaded")
         
-        # Build the full prompt with chat template
+
         full_prompt = self._build_prompt(prompt, system_prompt)
         
-        # Set generation parameters
+
         gen_params = {
             "max_tokens": max_tokens or self.config.max_tokens,
             "temperature": temperature or self.config.temperature,
@@ -143,7 +143,7 @@ class LocalLLM:
     
     def _generate_complete(self, prompt: str, params: Dict[str, Any]) -> str:
         """Generate complete response (non-streaming)."""
-        # Truncate prompt if it exceeds context window
+
         prompt = self._truncate_prompt(prompt, params["max_tokens"])
         
         response = self.model(
@@ -258,7 +258,7 @@ class LocalLLM:
         self, prompt: str, params: Dict[str, Any]
     ) -> Generator[str, None, None]:
         """Generate response with streaming."""
-        # Truncate prompt if it exceeds context window
+
         prompt = self._truncate_prompt(prompt, params["max_tokens"])
         
         stream = self.model(

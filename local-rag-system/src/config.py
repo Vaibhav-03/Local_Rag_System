@@ -221,10 +221,10 @@ def get_default_config() -> RAGConfig:
     """Get default configuration optimized for laptop usage."""
     config = RAGConfig()
     
-    # Auto-detect optimal settings
+
     import platform
     
-    # Set device based on platform
+
     if platform.system() == "Darwin" and platform.processor() == "arm":
         config.embedding.device = "mps"  # Apple Silicon
     else:
@@ -236,7 +236,7 @@ def get_default_config() -> RAGConfig:
     config.retriever.documents_path = str(project_root / "models" / "bioasq_documents.pkl")
     config.corpus_dir = str(project_root / "data" / "bioasq")
     
-    # Set default model path (TinyLlama)
+
     config.llm.model_path = str(project_root / "models" / "tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf")
     
     return config

@@ -78,7 +78,7 @@ class BioASQDatasetLoader:
         corpus_cache = self.cache_dir / "corpus.json"
         questions_cache = self.cache_dir / "questions.json"
         
-        # Check cache
+
         if not force and corpus_cache.exists() and questions_cache.exists():
             print("Loading from cache...")
             self._load_from_cache()
@@ -86,7 +86,7 @@ class BioASQDatasetLoader:
         
         print("Downloading rag-mini-bioasq dataset from Hugging Face...")
         
-        # Load text corpus
+
         print("Loading text corpus...")
         corpus_ds = load_dataset(
             "rag-datasets/rag-mini-bioasq",
@@ -94,7 +94,7 @@ class BioASQDatasetLoader:
             split="passages"
         )
         
-        # Load question-answer-passages
+
         print("Loading questions and answers...")
         qa_ds = load_dataset(
             "rag-datasets/rag-mini-bioasq",
@@ -102,7 +102,7 @@ class BioASQDatasetLoader:
             split="test"
         )
         
-        # Process corpus
+
         print(f"Processing {len(corpus_ds)} passages...")
         self.corpus = []
         for item in corpus_ds:
@@ -113,19 +113,19 @@ class BioASQDatasetLoader:
             )
             self.corpus.append(passage)
         
-        # Process questions
+
         print(f"Processing {len(qa_ds)} questions...")
         self.questions = []
         for item in qa_ds:
-            # Handle different possible field names
+
             question_text = item.get("question", item.get("query", ""))
             answer = item.get("answer", item.get("answers", None))
             
-            # Handle answer being a list
+
             if isinstance(answer, list):
                 answer = answer[0] if answer else None
             
-            # Get relevant passage IDs
+
             relevant_ids = item.get("relevant_passage_ids", 
                                    item.get("positive_passages", 
                                            item.get("passages", [])))
@@ -157,7 +157,7 @@ class BioASQDatasetLoader:
             )
             self.questions.append(question)
         
-        # Cache the processed data
+
         self._save_to_cache()
         self._loaded = True
         
@@ -294,7 +294,7 @@ def export_corpus_to_files(loader: BioASQDatasetLoader, output_dir: str) -> int:
     
     passages = loader.get_passages()
     
-    # Group passages into files (100 per file for manageability)
+
     batch_size = 100
     file_count = 0
     

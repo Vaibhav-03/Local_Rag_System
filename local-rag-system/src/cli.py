@@ -42,7 +42,7 @@ def print_banner():
 
 def print_response(response: RAGResponse):
     """Print a formatted RAG response."""
-    # Main answer panel
+
     console.print()
     console.print(Panel(
         Markdown(response.answer),
@@ -50,7 +50,7 @@ def print_response(response: RAGResponse):
         border_style="green",
     ))
     
-    # Sources table
+
     if response.sources:
         table = Table(title="📚 Sources", show_header=True, header_style="bold magenta")
         table.add_column("Rank", style="cyan", width=6)
@@ -102,7 +102,7 @@ def stream_response(pipeline: RAGPipeline, query: str):
                 response_text += token
                 live.update(Markdown(response_text))
             elif isinstance(token, RAGResponse):
-                # Final response with metadata
+
                 sources = token.sources
                 break
     
@@ -279,7 +279,7 @@ def stats(ctx):
     console.print(table)
     console.print()
     
-    # LLM stats
+
     table = Table(title="🤖 Language Model", show_header=False)
     table.add_column("Property", style="cyan")
     table.add_column("Value", style="green")

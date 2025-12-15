@@ -52,10 +52,10 @@ class EmbeddingModel:
         
         print(f"Loading embedding model: {self.config.model_name}")
         
-        # Determine device
+
         device = self.config.device
         if device == "mps":
-            # Check if MPS is available (Apple Silicon)
+
             import torch
             if not torch.backends.mps.is_available():
                 print("MPS not available, falling back to CPU")
@@ -66,7 +66,7 @@ class EmbeddingModel:
             device=device,
         )
         
-        # Get embedding dimension
+
         self.dimension = self.model.get_sentence_embedding_dimension()
         print(f"Embedding dimension: {self.dimension}")
     
@@ -88,7 +88,7 @@ class EmbeddingModel:
         if self.model is None:
             raise RuntimeError("Model not loaded")
         
-        # Handle single text input
+
         if isinstance(texts, str):
             texts = [texts]
         

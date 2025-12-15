@@ -20,14 +20,14 @@
 
 set -e  # Exit on error
 
-# Colors for output
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Script directory
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT_DIR="$( cd "$SCRIPT_DIR/.." && pwd )"
 
@@ -76,10 +76,10 @@ else
     echo -e "${GREEN}✓ Virtual environment created${NC}"
 fi
 
-# Activate virtual environment
+
 source venv/bin/activate
 
-# Upgrade pip
+
 pip install --upgrade pip -q
 
 # -----------------------------------------------------------------------------
@@ -87,7 +87,7 @@ pip install --upgrade pip -q
 # -----------------------------------------------------------------------------
 echo -e "${YELLOW}[3/6] Installing Python dependencies...${NC}"
 
-# Install main dependencies
+
 pip install -r requirements.txt
 
 echo -e "${GREEN}✓ Dependencies installed${NC}"

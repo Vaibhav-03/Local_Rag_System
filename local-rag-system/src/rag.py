@@ -96,22 +96,22 @@ class RAGPipeline:
         self.config = config
         self.verbose = config.verbose
         
-        # Initialize components
+
         print("Initializing RAG pipeline...")
         
-        # Embedding model (always needed)
+
         self.embedding_model = EmbeddingModel(config.embedding)
         
-        # Retriever
+
         self.retriever = VectorRetriever(config.retriever, self.embedding_model)
         
-        # LLM
+
         self.llm = create_llm(config.llm)
         
-        # Guardrails
+
         self.guardrails = ContentGuardrails(config.guardrails)
         
-        # Query refinement
+
         self.query_refiner = QueryRefiner()
         
         print("RAG pipeline initialized!")
@@ -310,7 +310,7 @@ class RAGPipeline:
         results: List[RetrievalResult],
     ) -> str:
         """Build the full prompt for the LLM."""
-        # Include source information for citation
+
         source_list = ", ".join(
             r.document.source or f"Doc {r.document.doc_id}"
             for r in results[:3]
