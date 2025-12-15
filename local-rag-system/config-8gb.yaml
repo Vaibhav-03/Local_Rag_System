@@ -1,0 +1,74 @@
+# =============================================================================
+# Optimized Configuration for 8GB RAM M1 Mac
+# =============================================================================
+# Uses TinyLlama and reduced context for memory efficiency
+# =============================================================================
+
+# Language Model Configuration - Optimized for low memory
+llm:
+  # TinyLlama is recommended for 8GB systems
+  model_path: "models/tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf"
+  
+  # Reduced context window saves memory (2048 instead of 4096)
+  n_ctx: 2048
+  
+  # Shorter responses to reduce memory during generation
+  max_tokens: 256
+  
+  temperature: 0.7
+  top_p: 0.9
+  
+  # Let system auto-detect optimal thread count
+  n_threads: 0
+  
+  # Enable Metal GPU acceleration on M1 (offload layers to GPU)
+  # This SIGNIFICANTLY improves speed on Apple Silicon
+  n_gpu_layers: 32
+  
+  repeat_penalty: 1.1
+  stop_sequences:
+    - "Human:"
+    - "User:"
+    - "\n\n\n"
+
+# Embedding Model - Same efficient model
+embedding:
+  model_name: "all-MiniLM-L6-v2"
+  # Use Metal Performance Shaders on M1
+  device: "mps"
+  batch_size: 16  # Smaller batches for memory
+  normalize: true
+
+# Retriever - Optimized for memory
+retriever:
+  top_k: 3  # Fewer documents = less context = less memory
+  similarity_threshold: 0.35
+  chunk_size: 400  # Smaller chunks
+  chunk_overlap: 40
+  index_path: "models/faiss_index"
+  documents_path: "models/documents.pkl"
+
+# Guardrails
+guardrails:
+  enabled: true
+  blocked_topics:
+    - "illegal activities"
+    - "violence"
+    - "hate speech"
+    - "malware"
+    - "exploit"
+    - "hack"
+    - "weapon"
+    - "drug synthesis"
+    - "terrorism"
+  allowed_domains: []
+  max_query_length: 1500
+  rejection_message: "I'm sorry, but I cannot assist with that topic."
+
+# Shorter system prompt to save tokens
+system_prompt: |
+  You are a helpful AI assistant. Use the provided context to answer questions accurately. Cite sources when possible. If unsure, say so.
+
+verbose: false
+corpus_dir: "corpus"
+

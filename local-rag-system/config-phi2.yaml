@@ -1,0 +1,60 @@
+# =============================================================================
+# Phi-2 Configuration (Optimized for 8GB RAM)
+# =============================================================================
+# Use: python main.py --config config-phi2.yaml
+# Download: wget -P models/ https://huggingface.co/TheBloke/phi-2-GGUF/resolve/main/phi-2.Q4_K_M.gguf
+# =============================================================================
+
+llm:
+  model_path: "models/phi-2.Q4_K_M.gguf"
+  n_ctx: 4096              # Full context window
+  max_tokens: 256
+  temperature: 0.7
+  top_p: 0.9
+  n_threads: 0
+  n_gpu_layers: 32         # Use Metal on Apple Silicon
+  repeat_penalty: 1.1
+  stop_sequences:
+    - "Human:"
+    - "User:"
+    - "Instruct:"
+    - "\n\n\n"
+
+embedding:
+  model_name: "all-MiniLM-L6-v2"
+  device: "mps"            # Apple Silicon GPU
+  batch_size: 32
+  normalize: true
+
+retriever:
+  top_k: 5
+  similarity_threshold: 0.3
+  chunk_size: 500
+  chunk_overlap: 50
+  index_path: "models/bioasq_faiss_index"
+  documents_path: "models/bioasq_documents.pkl"
+
+guardrails:
+  enabled: true
+  blocked_topics:
+    - "illegal activities"
+    - "violence"
+    - "hate speech"
+    - "malware"
+    - "exploit"
+    - "hack"
+    - "weapon"
+    - "drug synthesis"
+    - "terrorism"
+  allowed_domains: []
+  max_query_length: 2000
+  rejection_message: "I'm sorry, but I cannot assist with that topic."
+
+system_prompt: |
+  You are a helpful AI assistant with access to a biomedical knowledge base.
+  Answer questions accurately based on the provided context.
+  If the context doesn't contain relevant information, say so clearly.
+  Be concise but thorough.
+
+verbose: false
+corpus_dir: "data/bioasq"

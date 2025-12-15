@@ -1,0 +1,115 @@
+# =============================================================================
+# Local RAG System Configuration
+# =============================================================================
+# Edit this file to customize the RAG system behavior.
+# =============================================================================
+
+# Language Model Configuration
+llm:
+  # Path to GGUF model file (required for non-mock mode)
+  model_path: "models/tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf"
+  
+  # Context window size (tokens) - larger = more context but more memory
+  n_ctx: 4096
+  
+  # Maximum tokens to generate per response
+  max_tokens: 512
+  
+  # Temperature (0.0 = deterministic, 1.0 = creative)
+  temperature: 0.7
+  
+  # Top-p sampling (nucleus sampling)
+  top_p: 0.9
+  
+  # Number of CPU threads (0 = auto-detect)
+  n_threads: 0
+  
+  # GPU layers to offload (0 = CPU only, increase for GPU acceleration)
+  n_gpu_layers: 0
+  
+  # Repeat penalty to reduce repetitive output
+  repeat_penalty: 1.1
+  
+  # Sequences that stop generation
+  stop_sequences:
+    - "Human:"
+    - "User:"
+    - "\n\n\n"
+
+# Embedding Model Configuration
+embedding:
+  # Model from HuggingFace sentence-transformers
+  # Options: all-MiniLM-L6-v2 (fast), all-mpnet-base-v2 (quality)
+  model_name: "all-MiniLM-L6-v2"
+  
+  # Device: cpu, cuda, mps (Apple Silicon)
+  device: "cpu"
+  
+  # Batch size for encoding documents
+  batch_size: 32
+  
+  # Normalize embeddings for cosine similarity
+  normalize: true
+
+# Retriever Configuration
+retriever:
+  # Number of documents to retrieve
+  top_k: 5
+  
+  # Minimum similarity score (0-1)
+  similarity_threshold: 0.3
+  
+  # Document chunk size in characters
+  chunk_size: 500
+  
+  # Overlap between chunks
+  chunk_overlap: 50
+  
+  # Path to save/load FAISS index
+  index_path: "models/faiss_index"
+  
+  # Path to save/load document store
+  documents_path: "models/documents.pkl"
+
+# Guardrails Configuration
+guardrails:
+  # Enable content safety guardrails
+  enabled: true
+  
+  # Topics that will be blocked
+  blocked_topics:
+    - "illegal activities"
+    - "violence"
+    - "hate speech"
+    - "malware"
+    - "exploit"
+    - "hack"
+    - "weapon"
+    - "drug synthesis"
+    - "terrorism"
+  
+  # Restrict to specific domains (empty = all allowed)
+  allowed_domains: []
+  
+  # Maximum query length
+  max_query_length: 2000
+  
+  # Message shown when query is blocked
+  rejection_message: "I'm sorry, but I cannot assist with that topic. Please ask about something else."
+
+# System prompt for the LLM
+system_prompt: |
+  You are a helpful AI assistant with access to a knowledge base.
+  When answering questions:
+  1. Use the provided context to give accurate, sourced answers
+  2. If the context doesn't contain relevant information, say so clearly
+  3. Cite your sources by referencing the document chunks provided
+  4. Be concise but thorough
+  5. If you're uncertain, express that uncertainty
+
+# Enable verbose logging
+verbose: false
+
+# Directory containing documents to index
+corpus_dir: "data/bioasq"
+

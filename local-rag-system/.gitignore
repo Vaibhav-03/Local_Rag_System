@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.pytest_cache/
+.mypy_cache/
+
+# Mac
+.DS_Store
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Project Specific
+# Large model files
+models/*.gguf
+models/*.bin
+models/faiss_index/
+models/documents.pkl
+
+# Data and Corpus
+data/
+# Keep corpus directory structure but ignore contents except .gitkeep if we had one, 
+# but for now let's ignore files in corpus if they are user documents.
+corpus/
+!corpus/.gitkeep
+
+# Outputs
+evaluation_results.json
+
+# Local configuration overrides (optional, but good practice)
+config.local.yaml
+.env
